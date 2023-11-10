@@ -1,0 +1,140 @@
+﻿@page "/Invoices"
+@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+
+
+@inject MudBlazor.ISnackbar snackBar
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+
+
+
+<h3>Invoices</h3>
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Add / Edit Invoice</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@invoice">
+            <MudGrid>
+                <MudItem xs="12" sm="4" md="6">
+                    <MudTextField @bind-Value="invoice.Name" Label="Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" sm="4" md="6">
+                    <MudTextField @bind-Value="invoice.Price" Label="Price" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" sm="4" md="6">
+                    <MudSelect T="Guid" Label="Select invoice" @bind-Value="invoice.ClientId">
+                        @foreach (var client in clients)
+                        {
+                            <MudSelectItem T="Guid" Value="@client.ClientId">@client.LastName</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Employee</MudButton>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+
+<MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Invoice, bool>(Search)" @bind-employee="invoice">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Invoices</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for Employees..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Price</MudTh>
+        <MudTh>Client Id</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.InvoiceId</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Price">@context.Price</MudTd>
+        <MudTd DataLabel="Price">@context.ClientId</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudPagination ShowFirstButton="true" ShowLastButton="true" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private string searchString = "";
+    private Invoice invoice = new Invoice();
+    private Client client = new Client();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        invoices = invoiceService.GetAll();
+        clients = clientService.GetAll();
+    }
+
+    private bool Search(Invoice invoice)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (invoice.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private List<Invoice> GetAll()
+    {
+        invoices = invoiceService.GetAll();
+        return invoices;
+    }
+
+    private void Add()
+    {
+        if (invoice.InvoiceId == Guid.Empty)
+        {
+            invoiceService.Add(invoice);
+        }
+        else
+        {
+            invoiceService.Update(invoice);
+        }
+        invoice = new Invoice();
+        snackBar.Add("invoice Added.", Severity.Success);
+        GetAll();
+    }
+
+    private void Update(Invoice record)
+    {
+        invoice = record;
+        StateHasChanged();
+    }
+
+    private async Task Delete(Invoice record)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if (confirmed)
+        {
+            invoiceService.Delete(record);
+            snackBar.Add("Invoice Deleted.", Severity.Success);
+            GetAll();
+        }
+    }
+
+    private MudTable<Invoice> _table;
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+}

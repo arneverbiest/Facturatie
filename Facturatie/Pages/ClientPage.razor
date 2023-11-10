@@ -1,0 +1,133 @@
+﻿@page "/Clients"
+@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+
+
+@inject MudBlazor.ISnackbar snackBar
+@inject IJSRuntime JsRuntime
+
+
+<h3>CLIENTS</h3>
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Clients</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@client">
+            <MudTextField @bind-Value="@client.FirstName" Label="First name of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.LastName" Label="Last name of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.Addres" Label="Adress of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.Btw" Label="BTW of Client"> </MudTextField>
+            <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Add">Add Client</MudButton>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+
+<MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Client, bool>(Search)" @bind-department="client">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Employees</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for Departments..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Client Id</MudTh>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>adress</MudTh>
+        <MudTh>BTW</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.ClientId</MudTd>
+        <MudTd DataLabel="Department Name">@context.FirstName</MudTd>
+        <MudTd DataLabel="Department Name">@context.LastName</MudTd>
+        <MudTd DataLabel="Department Name">@context.Addres</MudTd>
+        <MudTd DataLabel="Department Name">@context.Btw</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudPagination ShowFirstButton="true" ShowLastButton="true" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private string searchString = "";
+    private Client client = new Client();
+    private Invoice invoice = new Invoice();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        clients = clientService.GetAll();
+        invoices = invoiceService.GetAll();
+    }
+
+    private bool Search(Client client)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (client.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private List<Client> GetAll()
+    {
+        clients = clientService.GetAll();
+        return clients;
+    }
+
+    private void Add()
+    {
+        if (client.ClientId == Guid.Empty)
+        {
+            clientService.Add(client);
+        }
+        else
+        {
+            clientService.Update(client);
+            snackBar.Add("Client Updated", Severity.Success);
+        }
+        client = new Client();
+        snackBar.Add("Client Added", Severity.Success);
+        GetAll();
+    }
+
+    private void Update(Client record)
+    {
+        client = record;
+        StateHasChanged();
+    }
+
+
+    private async Task Delete(Client record)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if (confirmed)
+        {
+            clientService.Delete(record);
+            snackBar.Add("Client Deleted.", Severity.Success);
+            GetAll();
+        }
+    }
+
+
+    private MudTable<Client> _table;
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+
+}
