@@ -28,11 +28,15 @@ namespace Facturatie.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Addres")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Btw")
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -41,6 +45,22 @@ namespace Facturatie.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StreetNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VAT")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -58,6 +78,46 @@ namespace Facturatie.Migrations
                     b.Property<Guid>("ClientId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InvoiceNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("PriceWithVAT")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PriceWithoutVAT")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("InvoiceId");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("Invoice");
+                });
+
+            modelBuilder.Entity("Facturatie.Shared.Product", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InvoiceID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -65,11 +125,11 @@ namespace Facturatie.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.HasKey("InvoiceId");
+                    b.HasKey("ProductId");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("InvoiceID");
 
-                    b.ToTable("Invoice");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("Facturatie.Shared.Invoice", b =>
@@ -83,9 +143,25 @@ namespace Facturatie.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("Facturatie.Shared.Product", b =>
+                {
+                    b.HasOne("Facturatie.Shared.Invoice", "Invoice")
+                        .WithMany("Product")
+                        .HasForeignKey("InvoiceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+                });
+
             modelBuilder.Entity("Facturatie.Shared.Client", b =>
                 {
                     b.Navigation("Invoices");
+                });
+
+            modelBuilder.Entity("Facturatie.Shared.Invoice", b =>
+                {
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,10 +19,19 @@
     </MudCardHeader>
     <MudCardContent>
         <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@client">
+            <MudTextField @bind-Value="@client.ClientName" Label="Name of the company of the client"> </MudTextField>
             <MudTextField @bind-Value="@client.FirstName" Label="First name of Client"> </MudTextField>
             <MudTextField @bind-Value="@client.LastName" Label="Last name of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.Addres" Label="Adress of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.Btw" Label="BTW of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.VAT" Label="VAT of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.StreetName" Label="Street name of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.StreetNumber" Label="street number of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.PostalCode" Label="postalcode of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.City" Label="city of Client"> </MudTextField>
+            <MudTextField @bind-Value="@client.Country" Label="country of Client"> </MudTextField>
+            
+
+
+
             <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Add">Add Client</MudButton>
         </EditForm>
     </MudCardContent>
@@ -30,7 +39,7 @@
 
 <MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Client, bool>(Search)" @bind-department="client">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Employees</MudText>
+        <MudText Typo="Typo.h6">Clients</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="searchString" Placeholder="Search for Departments..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
@@ -44,10 +53,15 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.ClientId</MudTd>
-        <MudTd DataLabel="Department Name">@context.FirstName</MudTd>
-        <MudTd DataLabel="Department Name">@context.LastName</MudTd>
-        <MudTd DataLabel="Department Name">@context.Addres</MudTd>
-        <MudTd DataLabel="Department Name">@context.Btw</MudTd>
+        <MudTd DataLabel="Client Name">@context.ClientName</MudTd>
+        <MudTd DataLabel="Client First Name">@context.FirstName</MudTd>
+        <MudTd DataLabel="Client Last Name">@context.LastName</MudTd>
+        <MudTd DataLabel="Client VAT">@context.VAT</MudTd>
+        <MudTd DataLabel="Client Street Name">@context.StreetName</MudTd>
+        <MudTd DataLabel="Client Street Number">@context.StreetNumber</MudTd>
+        <MudTd DataLabel="Client PostalCode">@context.PostalCode</MudTd>
+        <MudTd DataLabel="Client City">@context.City</MudTd>
+        <MudTd DataLabel="Client Country">@context.Country</MudTd>
         <MudTd DataLabel="Actions">
             <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />

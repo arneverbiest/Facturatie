@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("ConnString")));
 builder.Services.AddTransient<ClientService>();
 builder.Services.AddTransient<InvoiceService>();
+builder.Services.AddTransient<ProductService>();
 builder.Services.AddMudServices();
 
 var app = builder.Build();

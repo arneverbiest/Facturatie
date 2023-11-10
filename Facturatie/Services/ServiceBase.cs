@@ -1,5 +1,5 @@
 ﻿using Facturatie.Interfaces;
-using System.Linq.Expressions;
+using Facturatie;
 
 namespace Facturatie.Services
 {
@@ -11,7 +11,6 @@ namespace Facturatie.Services
         {
             this.context = context;
         }
-
         public bool Add(T entity)
         {
             try
@@ -27,27 +26,13 @@ namespace Facturatie.Services
 
         }
 
-
-
-        public bool Update(T entity)
-        {
-            try
-            {
-                context.Set<T>().Update(entity);
-                return context.SaveChanges() != 0;
-            }
-             catch
-            {
-                return false;
-            }
-        }
-
         public bool Delete(T entity)
         {
             try
             {
                 context.Set<T>().Remove(entity);
                 return context.SaveChanges() != 0;
+
             }
             catch
             {
@@ -55,14 +40,28 @@ namespace Facturatie.Services
             }
         }
 
+        public List<T> GetAll()
+        {
+            return context.Set<T>().ToList();
+        }
+
         public T GetById(Guid id)
         {
             return context.Set<T>().Find(id);
         }
 
-        public List<T> GetAll()
+        public bool Update(T entity)
         {
-            return context.Set<T>().ToList();
+            try
+            {
+                context.Set<T>().Update(entity);
+                return context.SaveChanges() != 0;
+
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

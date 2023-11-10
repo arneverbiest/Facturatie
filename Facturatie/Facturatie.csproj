@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Facturatie.Shared\Facturatie.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
 </Project>

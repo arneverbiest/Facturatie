@@ -12,6 +12,7 @@ namespace Facturatie
 
         public virtual DbSet<Invoice> Invoice { get; set; }
         public virtual DbSet<Client> Client { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
 
     }
 }
