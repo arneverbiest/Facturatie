@@ -1,8 +1,80 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+@inject MudBlazor.ISnackbar snackBar
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
 
+
+
+<MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Invoice, bool>(Search)" @bind-employee="invoice">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Invoices</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for Employees..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>invoice number</MudTh>
+        <MudTh>start date</MudTh>
+        <MudTh>end date</MudTh>
+        <MudTh>price without VAT</MudTh>
+        <MudTh>Price with VAT</MudTh>
+        <MudTh>Client Id</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.InvoiceId</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Invoice Number">@context.InvoiceNumber</MudTd>
+        <MudTd DataLabel="Start Date">@context.StartDate</MudTd>
+        <MudTd DataLabel="End Date">@context.EndDate</MudTd>
+        <MudTd DataLabel="Price without VAT">@context.PriceWithoutVAT</MudTd>
+        <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
+        <MudTd DataLabel="Client ID">@context.ClientId</MudTd>
+        <MudTd DataLabel="Actions">
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudPagination ShowFirstButton="true" ShowLastButton="true" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private string searchString = "";
+    private Invoice invoice = new Invoice();
+    private Client client = new Client();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+    private MudTable<Invoice> _table;
+
+    private bool Search(Invoice invoice)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (invoice.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private List<Invoice> GetAll()
+    {
+        invoices = invoiceService.GetAll();
+        return invoices;
+    }
+
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+}

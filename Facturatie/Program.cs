@@ -17,6 +17,7 @@ builder.Services.AddTransient<ClientService>();
 builder.Services.AddTransient<InvoiceService>();
 builder.Services.AddTransient<ProductService>();
 builder.Services.AddMudServices();
+builder.Services.AddMudBlazorDialog();
 
 var app = builder.Build();
 

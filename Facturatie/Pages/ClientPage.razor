@@ -28,14 +28,12 @@
             <MudTextField @bind-Value="@client.PostalCode" Label="postalcode of Client"> </MudTextField>
             <MudTextField @bind-Value="@client.City" Label="city of Client"> </MudTextField>
             <MudTextField @bind-Value="@client.Country" Label="country of Client"> </MudTextField>
-            
-
-
-
+            <br/>
             <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Add">Add Client</MudButton>
         </EditForm>
     </MudCardContent>
 </MudCard>
+<hr/>
 
 <MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Client, bool>(Search)" @bind-department="client">
     <ToolBarContent>

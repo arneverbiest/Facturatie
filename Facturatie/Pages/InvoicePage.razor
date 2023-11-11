@@ -56,10 +56,13 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
+            <br/>
             <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Invoice</MudButton>
         </EditForm>
     </MudCardContent>
 </MudCard>
+<hr />
+
 
 <MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Invoice, bool>(Search)" @bind-employee="invoice">
     <ToolBarContent>
