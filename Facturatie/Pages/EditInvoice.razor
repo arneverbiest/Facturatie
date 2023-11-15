@@ -1,0 +1,92 @@
+﻿@page "/edit-invoice/{invoiceId}"
+
+
+@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+
+
+@inject MudBlazor.ISnackbar snackBar
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject InvoiceService invoiceService
+
+
+
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Invoices</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <EditForm OnValidSubmit="Update" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@invoice">
+            <MudTextField @bind-Value="@invoice.InvoiceNumber" Label="Name of the number of the invoice"> </MudTextField>
+            <MudDatePicker @bind-Value="@invoice.StartDate" Label="Name of the startdate of the onvoice"> </MudDatePicker>
+            <MudDatePicker @bind-Value="@invoice.EndDate" Label="Name of the enddate of the invoice"> </MudDatePicker>
+            <br />
+            <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Update">Update invoice</MudButton>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+
+
+
+
+
+@code {
+    [Parameter] public string invoiceId { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+
+    private Guid parsedInvoicetId;
+    private Invoice invoice = new Invoice();
+    private Client client = new Client();
+    private Product product = new Product();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+    private List<Product> products = new List<Product>();
+
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        invoices = invoiceService.GetAll();
+        clients = clientService.GetAll();
+
+        invoice = new Invoice(); 
+
+        if (clientService != null && Guid.TryParse(invoiceId, out parsedInvoicetId))
+        {
+            client = clientService.GetById(parsedInvoicetId);
+        }
+        else
+        {
+            // Handle the case where clientService is null or parsing fails
+            Console.WriteLine($"clientService is null or failed to parse clientId: {invoiceId}");
+        }
+    }
+
+    private List<Invoice> GetAll()
+    {
+        invoices = invoiceService.GetAll();
+        return invoices;
+    }
+
+
+    private void Update()
+    {
+        invoiceService.Update(invoice);
+        snackBar.Add("invoice Updated.", Severity.Success);
+        GetAll();
+        NavigationManager.NavigateTo($"/Invoices");
+    }
+
+
+}

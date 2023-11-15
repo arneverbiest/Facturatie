@@ -5,6 +5,7 @@
 @using MudBlazor
 @using static MudBlazor.CategoryTypes
 
+
 @inject NavigationManager NavigationManager
 @inject MudBlazor.IDialogService DialogService
 @inject MudBlazor.ISnackbar snackBar
@@ -126,9 +127,9 @@
             };
         DialogService.Show<AddClient>("Add Clients", options);
     }
-    private void OpenEditDialog(Guid clientId)
+    private void OpenEditDialog(Guid invoiceId)
     {
         // Pass the client ID to the EditClient page
-        NavigationManager.NavigateTo($"/edit-client/{clientId}");
+        NavigationManager.NavigateTo($"/edit-client/{invoiceId}");
     }
 }

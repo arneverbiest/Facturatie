@@ -6,6 +6,7 @@
 @using static MudBlazor.CategoryTypes
 
 
+@inject NavigationManager NavigationManager
 @inject MudBlazor.ISnackbar snackBar
 @inject IDialogService DialogService
 @inject IJSRuntime JsRuntime
@@ -47,6 +48,9 @@
         <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
         <MudTd DataLabel="Client name">@context.Client.ClientName</MudTd>
         <MudTd DataLabel="Actions">
+            <MudButton OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
+                Edit invoice
+            </MudButton>
             <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
         </MudTd>
@@ -127,6 +131,12 @@
     private void OpenDialog()
     {
         DialogService.Show<AddInvoice>("Invoices");
+    }
+
+    private void OpenEditDialog(Guid invoiceId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/edit-invoice/{invoiceId}");
     }
 
 }
