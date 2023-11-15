@@ -1,0 +1,137 @@
+﻿@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+
+
+@inject MudBlazor.ISnackbar snackBar
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+
+
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Add Invoice</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@invoice">
+            <MudGrid>
+
+                <MudItem xs="12" sm="4" md="6">
+                    <MudSelect T="Guid" Label="Select Client" @bind-Value="invoice.ClientId">
+                        <MudSelectItem T="Guid" Value="@client.ClientId">Clients</MudSelectItem>
+                        @foreach (var client in clients)
+                        {
+                            <MudSelectItem T="Guid" Value="@client.ClientId">@client.ClientName</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+
+                @*
+                <MudItem xs="12" sm="4" md="6">
+                <MudTextField @bind-Value="invoice.Name" Label="Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudItem>
+                *@
+
+
+                <MudItem xs="12" sm="4" md="6">
+                    <MudTextField @bind-Value="invoice.InvoiceNumber" Label="Invoice Number" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudItem>
+
+                <MudItem xs="12" sm="4" md="6">
+                    <MudDatePicker @bind-Value="invoice.StartDate" Editable="true" Label="Start date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
+                </MudItem>
+
+                <MudItem xs="12" sm="4" md="6">
+                    <MudDatePicker @bind-Value="invoice.EndDate" Editable="true" Label="End date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
+                </MudItem>
+                
+                
+                @*
+                <MudItem xs="12" sm="4" md="6">
+                <MudTextField @bind-Value="invoice.PriceWithoutVAT" Label="Price Without VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudItem>
+
+                <MudItem xs="12" sm="4" md="6">
+                <MudTextField @bind-Value="invoice.PriceWithVAT" Label="Price With VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudItem>
+                *@
+            </MudGrid>
+            <br />
+            <hr/>
+            <MudItem xs="12" sm="4" md="6">
+                <MudTextField @bind-Value="product.Name" Label="Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            </MudItem>
+
+            <MudItem xs="12" sm="4" md="6">
+                <MudTextField @bind-Value="product.Description" Label="Description" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            </MudItem>
+            
+            <MudItem xs="12" sm="4" md="6">
+                <MudTextField @bind-Value="product.Price" Label="Product Price" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            </MudItem>
+
+            <br/>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="AddProduct">Add Product</MudButton>
+            <br/>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Invoice</MudButton>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private Invoice invoice = new Invoice();
+    private Client client = new Client();
+    private Product product = new Product();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+    private List<Product> products = new List<Product>();
+
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Close() => MudDialog.Close(DialogResult.Ok(true));
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        clients = clientService.GetAll();
+        invoices = invoiceService.GetAll();
+        products = productService.GetAll();
+    }
+
+    private List<Invoice> GetAll()
+    {
+        invoices = invoiceService.GetAll();
+        return invoices;
+    }
+
+
+    private void Add()
+    {
+        if (invoice.InvoiceId == Guid.Empty)
+        {
+            invoiceService.Add(invoice);
+        }
+        else
+        {
+            invoiceService.Update(invoice);
+        }
+        invoice = new Invoice();
+        snackBar.Add("invoice Added.", Severity.Success);
+        GetAll();
+        Close();
+    }
+
+    private void AddProduct()
+    {
+        new NotImplementedException();
+    }
+
+
+}

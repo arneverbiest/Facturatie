@@ -13,54 +13,10 @@
 
 
 <h3>Invoices</h3>
-<MudCard Elevation="25">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h6">Add / Edit Invoice</MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudCardContent>
-        <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@invoice">
-            <MudGrid>
-                <MudItem xs="12" sm="4" md="6">
-                    <MudTextField @bind-Value="invoice.Name" Label="Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-                </MudItem>
-                
-                <MudItem xs="12" sm="4" md="6">
-                    <MudTextField @bind-Value="invoice.InvoiceNumber" Label="Invoice Number" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-                </MudItem>
-                
-                <MudItem xs="12" sm="4" md="6">
-                    <MudDatePicker @bind-Value="invoice.StartDate" Editable="true" Label="Start date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
-                </MudItem>
-                
-                <MudItem xs="12" sm="4" md="6">
-                    <MudDatePicker @bind-Value="invoice.EndDate" Editable="true" Label="End date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
-                </MudItem>
 
-                <MudItem xs="12" sm="4" md="6">
-                    <MudTextField @bind-Value="invoice.PriceWithoutVAT" Label="Price Without VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-                </MudItem>
-                
-                <MudItem xs="12" sm="4" md="6">
-                    <MudTextField @bind-Value="invoice.PriceWithVAT" Label="Price With VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-                </MudItem>
-
-
-                <MudItem xs="12" sm="4" md="6">
-                    <MudSelect T="Guid" Label="Select Client" @bind-Value="invoice.ClientId">
-                        @foreach (var client in clients)
-                        {
-                            <MudSelectItem T="Guid" Value="@client.ClientId">@client.ClientName</MudSelectItem>
-                        }
-                    </MudSelect>
-                </MudItem>
-            </MudGrid>
-            <br/>
-            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Invoice</MudButton>
-        </EditForm>
-    </MudCardContent>
-</MudCard>
+<MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+    Add Invoice
+</MudButton>
 <hr />
 
 
@@ -78,7 +34,6 @@
         <MudTh>end date</MudTh>
         <MudTh>price without VAT</MudTh>
         <MudTh>Price with VAT</MudTh>
-        <MudTh>Client Id</MudTh>
         <MudTh>Client name</MudTh>
     </HeaderContent>
 
@@ -86,11 +41,10 @@
         <MudTd DataLabel="Id">@context.InvoiceId</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Invoice Number">@context.InvoiceNumber</MudTd>
-        <MudTd DataLabel="Start Date">@context.StartDate</MudTd>
-        <MudTd DataLabel="End Date">@context.EndDate</MudTd>
+        <MudTd DataLabel="Start Date">@context.StartDate.ToShortDateString()</MudTd>
+        <MudTd DataLabel="End Date">@context.EndDate.ToShortDateString()</MudTd>
         <MudTd DataLabel="Price without VAT">@context.PriceWithoutVAT</MudTd>
         <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
-        <MudTd DataLabel="Client ID">@context.ClientId</MudTd>
         <MudTd DataLabel="Client name">@context.Client.ClientName</MudTd>
         <MudTd DataLabel="Actions">
             <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
@@ -168,6 +122,11 @@
     private void PageChanged(int i)
     {
         _table.NavigateTo(i - 1);
+    }
+
+    private void OpenDialog()
+    {
+        DialogService.Show<AddInvoice>("Invoices");
     }
 
 }

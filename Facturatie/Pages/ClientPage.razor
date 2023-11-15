@@ -5,35 +5,19 @@
 @using MudBlazor
 @using static MudBlazor.CategoryTypes
 
-
+@inject NavigationManager NavigationManager
+@inject MudBlazor.IDialogService DialogService
 @inject MudBlazor.ISnackbar snackBar
 @inject IJSRuntime JsRuntime
 
 
 <h3>CLIENTS</h3>
-<MudCard Elevation="25">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h6">Clients</MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudCardContent>
-        <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@client">
-            <MudTextField @bind-Value="@client.ClientName" Label="Name of the company of the client"> </MudTextField>
-            <MudTextField @bind-Value="@client.FirstName" Label="First name of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.LastName" Label="Last name of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.VAT" Label="VAT of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.StreetName" Label="Street name of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.StreetNumber" Label="street number of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.PostalCode" Label="postalcode of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.City" Label="city of Client"> </MudTextField>
-            <MudTextField @bind-Value="@client.Country" Label="country of Client"> </MudTextField>
-            <br/>
-            <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Add">Add Client</MudButton>
-        </EditForm>
-    </MudCardContent>
-</MudCard>
-<hr/>
+
+
+<MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+    Add Client
+</MudButton>
+<hr />
 
 <MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Client, bool>(Search)" @bind-department="client">
     <ToolBarContent>
@@ -43,10 +27,15 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Client Id</MudTh>
+        <MudTh>Client Name</MudTh>
         <MudTh>First Name</MudTh>
         <MudTh>Last Name</MudTh>
-        <MudTh>adress</MudTh>
-        <MudTh>BTW</MudTh>
+        <MudTh>VAT</MudTh>
+        <MudTh>Street Name</MudTh>
+        <MudTh>Street number</MudTh>
+        <MudTh>Postal code</MudTh>
+        <MudTh>city</MudTh>
+        <MudTh>country</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -61,6 +50,9 @@
         <MudTd DataLabel="Client City">@context.City</MudTd>
         <MudTd DataLabel="Client Country">@context.Country</MudTd>
         <MudTd DataLabel="Actions">
+            <MudButton OnClick="@(() => OpenEditDialog(context.ClientId))" Variant="Variant.Filled" Color="Color.Primary">
+                Edit Client
+            </MudButton>
             <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
         </MudTd>
@@ -99,22 +91,6 @@
         return clients;
     }
 
-    private void Add()
-    {
-        if (client.ClientId == Guid.Empty)
-        {
-            clientService.Add(client);
-        }
-        else
-        {
-            clientService.Update(client);
-            snackBar.Add("Client Updated", Severity.Success);
-        }
-        client = new Client();
-        snackBar.Add("Client Added", Severity.Success);
-        GetAll();
-    }
-
     private void Update(Client record)
     {
         client = record;
@@ -141,5 +117,18 @@
         _table.NavigateTo(i - 1);
     }
 
+    private void OpenDialog()
+    {
 
+        var options = new MudBlazor.DialogOptions
+            {
+                MaxWidth = MaxWidth.ExtraLarge
+            };
+        DialogService.Show<AddClient>("Add Clients", options);
+    }
+    private void OpenEditDialog(Guid clientId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/edit-client/{clientId}");
+    }
 }
