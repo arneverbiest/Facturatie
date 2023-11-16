@@ -49,8 +49,8 @@
                 <MudItem xs="12" sm="4" md="6">
                     <MudDatePicker @bind-Value="invoice.EndDate" Editable="true" Label="End date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
                 </MudItem>
-                
-                
+
+
                 @*
                 <MudItem xs="12" sm="4" md="6">
                 <MudTextField @bind-Value="invoice.PriceWithoutVAT" Label="Price Without VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
@@ -62,7 +62,7 @@
                 *@
             </MudGrid>
             <br />
-            <hr/>
+            <hr />
             <MudItem xs="12" sm="4" md="6">
                 <MudTextField @bind-Value="product.Name" Label="Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
             </MudItem>
@@ -70,17 +70,31 @@
             <MudItem xs="12" sm="4" md="6">
                 <MudTextField @bind-Value="product.Description" Label="Description" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
             </MudItem>
-            
+
             <MudItem xs="12" sm="4" md="6">
                 <MudTextField @bind-Value="product.Price" Label="Product Price" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
             </MudItem>
-
-            <br/>
-            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="AddProduct">Add Product</MudButton>
-            <br/>
-
-            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Invoice</MudButton>
         </EditForm>
+
+        <br />
+        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="AddProduct">Add Product</MudButton>
+        <MudText Typo="Typo.h6">Products in this invoice</MudText>
+        <MudTable Items="@products" TItem="Product">
+            <HeaderContent>
+                <MudTh>Product Name</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Price</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="product Name">@context.Name</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Price">@context.Price</MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        <br />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Invoice</MudButton>
     </MudCardContent>
 </MudCard>
 
@@ -128,9 +142,16 @@
         Close();
     }
 
+
     private void AddProduct()
     {
-        new NotImplementedException();
+
+            product.InvoiceID = invoice.InvoiceId; // Associate the product with the current invoice
+            productService.Add(product);
+            products = productService.GetProductsByInvoiceId(invoice.InvoiceId); // Update the list of products
+            product = new Product();
+            snackBar.Add("Product Added.", Severity.Success);
+
     }
 
 

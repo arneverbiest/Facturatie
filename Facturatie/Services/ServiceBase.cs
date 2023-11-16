@@ -1,5 +1,6 @@
 ﻿using Facturatie.Interfaces;
 using Facturatie;
+using Facturatie.Shared;
 
 namespace Facturatie.Services
 {

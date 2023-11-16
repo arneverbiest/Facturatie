@@ -7,5 +7,12 @@ namespace Facturatie.Services
         public ProductService(ApplicationDbContext context) : base(context)
         {
         }
+
+
+        public List<Product> GetProductsByInvoiceId(Guid invoiceId)
+        {
+            // Assuming your Product entity has an InvoiceId property
+            return Entities.Where(p => p.InvoiceID == invoiceId).ToList();
+        }
     }
 }

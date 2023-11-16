@@ -66,7 +66,7 @@ namespace Facturatie.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Client");
+                    b.ToTable("Client", (string)null);
                 });
 
             modelBuilder.Entity("Facturatie.Shared.Invoice", b =>
@@ -104,7 +104,7 @@ namespace Facturatie.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("Invoice");
+                    b.ToTable("Invoice", (string)null);
                 });
 
             modelBuilder.Entity("Facturatie.Shared.Product", b =>
@@ -131,7 +131,7 @@ namespace Facturatie.Migrations
 
                     b.HasIndex("InvoiceID");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("Facturatie.Shared.Invoice", b =>
