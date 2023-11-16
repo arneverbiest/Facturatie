@@ -51,6 +51,9 @@
             <MudButton OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
                 Edit invoice
             </MudButton>
+            <MudButton OnClick="@(() => OpenDetailDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
+                detail invoice
+            </MudButton>
             <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
         </MudTd>
@@ -137,6 +140,11 @@
     {
         // Pass the client ID to the EditClient page
         NavigationManager.NavigateTo($"/edit-invoice/{invoiceId}");
+    } 
+    private void OpenDetailDialog(Guid invoiceId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/detail-invoice/{invoiceId}");
     }
 
 }

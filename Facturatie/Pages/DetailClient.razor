@@ -1,0 +1,87 @@
+﻿@page "/detail-client/{clientId}"
+
+
+@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+
+
+@inject MudBlazor.ISnackbar snackBar
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject ClientService clientService
+
+<h3>DetailClient</h3>
+
+
+@if (client != null)
+{
+    <MudContainer>
+        <MudPaper Elevation="3" Padding="16px">
+            <MudTextField Disabled="true" Label="Name" @bind-Value="client.ClientName" />
+            <MudTextField Disabled="true" Label="First Name" @bind-Value="client.FirstName" />
+            <MudTextField Disabled="true" Label="Last Name" @bind-Value="client.LastName" />
+            <MudTextField Disabled="true" Label="VAT" @bind-Value="client.VAT" />
+            <MudTextField Disabled="true" Label="StreetName" @bind-Value="client.StreetName" />
+            <MudTextField Disabled="true" Label="StreetNumber" @bind-Value="client.StreetNumber" />
+            <MudTextField Disabled="true" Label="PostalCode" @bind-Value="client.PostalCode" />
+            <MudTextField Disabled="true" Label="City" @bind-Value="client.City" />
+            <MudTextField Disabled="true" Label="Country" @bind-Value="client.Country" />
+
+
+            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="Close">close</MudButton>
+        </MudPaper>
+    </MudContainer>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+
+
+@code {
+    [Parameter] public string clientId { get; set; }
+
+    private Guid parsedClientId;
+    private Invoice invoice = new Invoice();
+    private Client client = new Client();
+    private Product product = new Product();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+    private List<Product> products = new List<Product>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        invoices = invoiceService.GetAll();
+        clients = clientService.GetAll();
+        if (Guid.TryParse(clientId, out parsedClientId))
+        {
+            // Find the client with the specified ID
+            client = clients.FirstOrDefault(c => c.ClientId == parsedClientId);
+        }
+        else
+        {
+            // Handle invalid clientId
+        }
+    }
+
+    private List<Invoice> GetAll()
+    {
+        invoices = invoiceService.GetAll();
+        return invoices;
+    }
+
+    private void Close()
+    {
+        NavigationManager.NavigateTo($"/Clients");
+
+    }
+
+}
