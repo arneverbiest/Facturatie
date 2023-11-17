@@ -9,12 +9,12 @@ namespace Facturatie.Shared
 {
     public class Invoice
     {
-        public Guid InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; } = Guid.NewGuid();
         public string? Name { get; set; }
         public string InvoiceNumber { get; set; }
         public List<Product>? Product { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime StartDate { get; set; } = DateTime.Now;
+        public DateTime EndDate { get; set; } = DateTime.Now.AddMonths(1);
         public double? PriceWithoutVAT { get; set; }
         public double? VAT { get; set; }
         public double? PriceWithVAT { get; set; }

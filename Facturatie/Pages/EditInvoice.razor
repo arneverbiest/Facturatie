@@ -25,8 +25,8 @@
     <MudCardContent>
         <EditForm OnValidSubmit="Update" OnInvalidSubmit='()=>snackBar.Add("Provide a name",Severity.Warning)' Model="@invoice">
             <MudTextField @bind-Value="@invoice.InvoiceNumber" Label="Name of the number of the invoice"> </MudTextField>
-            <MudDatePicker @bind-Value="@invoice.StartDate" Label="Name of the startdate of the onvoice"> </MudDatePicker>
-            <MudDatePicker @bind-Value="@invoice.EndDate" Label="Name of the enddate of the invoice"> </MudDatePicker>
+            <MudDatePicker @bind-Value="@invoice.StartDate" DateFormat="yyyy-MM-dd" Label="Name of the startdate of the onvoice"> </MudDatePicker>
+            <MudDatePicker @bind-Value="@invoice.EndDate" DateFormat="yyyy-MM-dd" Label="Name of the enddate of the invoice"> </MudDatePicker>
             <br />
             <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Update">Update invoice</MudButton>
         </EditForm>
@@ -60,11 +60,16 @@
         invoices = invoiceService.GetAll();
         clients = clientService.GetAll();
 
-        invoice = new Invoice(); 
-
-        if (clientService != null && Guid.TryParse(invoiceId, out parsedInvoicetId))
+        if (parsedInvoicetId != Guid.Empty)
         {
-            client = clientService.GetById(parsedInvoicetId);
+            invoice = invoiceService.GetById(parsedInvoicetId);
+
+        }
+
+
+        if (invoiceService != null && Guid.TryParse(invoiceId, out parsedInvoicetId))
+        {
+            invoice = invoiceService.GetById(parsedInvoicetId);
         }
         else
         {

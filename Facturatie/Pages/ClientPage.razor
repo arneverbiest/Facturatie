@@ -15,7 +15,7 @@
 <h3>CLIENTS</h3>
 
 
-<MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+<MudButton OnClick="AddProduct" Variant="Variant.Filled" Color="Color.Primary">
     Add Client
 </MudButton>
 <hr />
@@ -121,14 +121,14 @@
         _table.NavigateTo(i - 1);
     }
 
-    private void OpenDialog()
+    private void AddProduct()
     {
 
         var options = new MudBlazor.DialogOptions
             {
                 MaxWidth = MaxWidth.ExtraLarge
             };
-        DialogService.Show<AddClient>("Add Clients", options);
+        DialogService.Show<AddProductDialog>("Add Product", options);
     }
     private void OpenEditDialog(Guid invoiceId)
     {

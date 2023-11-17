@@ -15,7 +15,7 @@
 
 <h3>Invoices</h3>
 
-<MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+<MudButton OnClick="addInvoice" Variant="Variant.Filled" Color="Color.Primary">
     Add Invoice
 </MudButton>
 <hr />
@@ -131,9 +131,9 @@
         _table.NavigateTo(i - 1);
     }
 
-    private void OpenDialog()
+    private void addInvoice()
     {
-        DialogService.Show<AddInvoice>("Invoices");
+        NavigationManager.NavigateTo($"/add-invoice");
     }
 
     private void OpenEditDialog(Guid invoiceId)
@@ -141,10 +141,22 @@
         // Pass the client ID to the EditClient page
         NavigationManager.NavigateTo($"/edit-invoice/{invoiceId}");
     } 
+
+
     private void OpenDetailDialog(Guid invoiceId)
     {
         // Pass the client ID to the EditClient page
         NavigationManager.NavigateTo($"/detail-invoice/{invoiceId}");
+    }
+
+    private void OpenDialog()
+    {
+
+        var options = new MudBlazor.DialogOptions
+            {
+                MaxWidth = MaxWidth.ExtraLarge
+            };
+        DialogService.Show<AddClient>("Add Clients", options);
     }
 
 }

@@ -1,4 +1,7 @@
-﻿@using Facturatie.Shared
+﻿@page "/add-invoice"
+
+
+@using Facturatie.Shared
 @using System
 @using System.Linq
 @using MudBlazor
@@ -43,37 +46,16 @@
                 </MudItem>
 
                 <MudItem xs="12" sm="4" md="6">
-                    <MudDatePicker @bind-Value="invoice.StartDate" Editable="true" Label="Start date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
+                    <MudDatePicker @bind-Value="invoice.StartDate" DateFormat="yyyy-MM-dd" Editable="true" Label="Start date" Variant="Variant.Text" Margin="Margin.Normal"></MudDatePicker>
                 </MudItem>
 
                 <MudItem xs="12" sm="4" md="6">
-                    <MudDatePicker @bind-Value="invoice.EndDate" Editable="true" Label="End date" Variant="Variant.Text" Margin="Margin.Normal">@DateTime.Today</MudDatePicker>
+                    <MudDatePicker @bind-Value="invoice.EndDate" DateFormat="yyyy-MM-dd" Editable="true" Label="End date" Variant="Variant.Text" Margin="Margin.Normal"></MudDatePicker>
                 </MudItem>
 
 
-                @*
-                <MudItem xs="12" sm="4" md="6">
-                <MudTextField @bind-Value="invoice.PriceWithoutVAT" Label="Price Without VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-                </MudItem>
 
-                <MudItem xs="12" sm="4" md="6">
-                <MudTextField @bind-Value="invoice.PriceWithVAT" Label="Price With VAT" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-                </MudItem>
-                *@
             </MudGrid>
-            <br />
-            <hr />
-            <MudItem xs="12" sm="4" md="6">
-                <MudTextField @bind-Value="product.Name" Label="Name" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-            </MudItem>
-
-            <MudItem xs="12" sm="4" md="6">
-                <MudTextField @bind-Value="product.Description" Label="Description" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-            </MudItem>
-
-            <MudItem xs="12" sm="4" md="6">
-                <MudTextField @bind-Value="product.Price" Label="Product Price" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-            </MudItem>
         </EditForm>
 
         <br />
@@ -143,16 +125,26 @@
     }
 
 
+    // private void AddProduct()
+    // {
+
+    //         product.InvoiceID = invoice.InvoiceId; // Associate the product with the current invoice
+    //         productService.Add(product);
+    //         products = productService.GetProductsByInvoiceId(invoice.InvoiceId); // Update the list of products
+    //         product = new Product();
+    //         snackBar.Add("Product Added.", Severity.Success);
+
+    // }
+
+
     private void AddProduct()
     {
 
-            product.InvoiceID = invoice.InvoiceId; // Associate the product with the current invoice
-            productService.Add(product);
-            products = productService.GetProductsByInvoiceId(invoice.InvoiceId); // Update the list of products
-            product = new Product();
-            snackBar.Add("Product Added.", Severity.Success);
-
+        var options = new MudBlazor.DialogOptions
+            {
+                MaxWidth = MaxWidth.ExtraLarge
+            };
+        DialogService.Show<AddProductDialog>("Add product", options);
     }
-
 
 }
