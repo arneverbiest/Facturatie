@@ -16,8 +16,14 @@
 
 <MudCard Elevation="25">
     <MudCardContent>
-        <EditForm OnValidSubmit="AddProduct" OnInvalidSubmit='()=>snackBar.Add("Product added",Severity.Warning)' Model="@product">
-            <MudTextField @bind-Value="@product.Name" Label="Name of the product"> </MudTextField>
+        <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Product added",Severity.Warning)' Model="@product">
+            <MudSelect T="Guid" Label="Select invoice" @bind-Value="product.InvoiceID">
+                <MudSelectItem T="Guid" Value="@invoice.InvoiceId">invoices</MudSelectItem>
+                @foreach (var invoice in invoices)
+                {
+                    <MudSelectItem T="Guid" Value="@invoice.InvoiceId">@client.ClientName</MudSelectItem>
+                }
+            </MudSelect>            <MudTextField @bind-Value="@product.Name" Label="Name of the product"> </MudTextField>
             <MudTextField @bind-Value="@product.Description" Label="Description of the product"> </MudTextField>
             <MudNumericField @bind-Value="@product.Price" Label="Price of product"> </MudNumericField>
         </EditForm>

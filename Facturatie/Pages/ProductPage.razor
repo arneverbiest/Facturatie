@@ -1,0 +1,127 @@
+﻿@page "/products"
+
+
+@using Facturatie.Shared
+@using System
+@using System.Linq
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+
+
+@inject NavigationManager NavigationManager
+@inject MudBlazor.IDialogService DialogService
+@inject MudBlazor.ISnackbar snackBar
+@inject IJSRuntime JsRuntime
+
+<h3>Products</h3>
+
+<MudButton OnClick="AddProduct" Variant="Variant.Filled" Color="Color.Primary">
+    Add product
+</MudButton>
+<hr />
+
+<MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" @bind-department="product" >
+    <HeaderContent>
+        <MudTh>Product Id</MudTh>
+        <MudTh>Pproduct Name</MudTh>
+        <MudTh>Product Price</MudTh>
+
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.ProductId</MudTd>
+        <MudTd DataLabel="Client Name">@context.Name</MudTd>
+        <MudTd DataLabel="Client First Name">@context.Price</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudFab OnClick="@(() => OpenEditDialog(context.ProductId))" Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+            <MudButton OnClick="@(() => OpenDetailDialog(context.ProductId))" Variant="Variant.Filled" Color="Color.Primary">
+                Detail Client
+            </MudButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudPagination ShowFirstButton="true" ShowLastButton="true" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+    </PagerContent>
+</MudTable>
+
+
+
+
+
+
+
+@code {
+    private string searchString = "";
+    private MudTable<Product> _table;
+    private Client client = new Client();
+    private Invoice invoice = new Invoice();
+    private Product product = new Product();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+    private List<Product> products = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        clients = clientService.GetAll();
+        invoices = invoiceService.GetAll();
+        products = productService.GetAll();
+    }
+
+    private bool Search(Product product)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (product.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private List<Product> GetAll()
+    {
+        products = productService.GetAll();
+        return products;
+    }
+
+    private void Update(Product record)
+    {
+        product = record;
+        StateHasChanged();
+    }
+
+
+    private async Task Delete(Product record)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if (confirmed)
+        {
+            productService.Delete(record);
+            snackBar.Add("Client Deleted.", Severity.Success);
+            GetAll();
+        }
+    }
+
+
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+    private void AddProduct()
+    {
+        NavigationManager.NavigateTo("/add-product");
+
+    }
+    private void OpenEditDialog(Guid productId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/edit-product/{productId}");
+    }
+
+    private void OpenDetailDialog(Guid productId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/detail-Product/{productId}");
+    }
+}

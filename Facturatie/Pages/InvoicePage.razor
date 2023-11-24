@@ -48,9 +48,7 @@
         <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
         <MudTd DataLabel="Client name">@context.Client.ClientName</MudTd>
         <MudTd DataLabel="Actions">
-            <MudButton OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
-                Edit invoice
-            </MudButton>
+            <MudFab OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
             <MudButton OnClick="@(() => OpenDetailDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
                 detail invoice
             </MudButton>
@@ -133,14 +131,14 @@
 
     private void addInvoice()
     {
-        NavigationManager.NavigateTo($"/add-invoice");
+        NavigationManager.NavigateTo("/add-invoice");
     }
 
     private void OpenEditDialog(Guid invoiceId)
     {
         // Pass the client ID to the EditClient page
         NavigationManager.NavigateTo($"/edit-invoice/{invoiceId}");
-    } 
+    }
 
 
     private void OpenDetailDialog(Guid invoiceId)
