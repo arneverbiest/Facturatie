@@ -15,7 +15,7 @@
 <h3>CLIENTS</h3>
 
 
-<MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+<MudButton OnClick="AddClient" Variant="Variant.Filled" Color="Color.Primary">
     Add Client
 </MudButton>
 <hr />
@@ -51,11 +51,11 @@
         <MudTd DataLabel="Client City">@context.City</MudTd>
         <MudTd DataLabel="Client Country">@context.Country</MudTd>
         <MudTd DataLabel="Actions">
-            <MudButton OnClick="@(() => OpenEditDialog(context.ClientId))" Variant="Variant.Filled" Color="Color.Primary">
-                Edit Client
-            </MudButton>
-            <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab OnClick="@(() => OpenEditDialog(context.ClientId))" Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"/>
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+            <MudButton OnClick="@(() => OpenDetailDialog(context.ClientId))" Variant="Variant.Filled" Color="Color.Primary">
+                Detail Client
+            </MudButton>
         </MudTd>
     </RowTemplate>
     <PagerContent>
@@ -118,18 +118,24 @@
         _table.NavigateTo(i - 1);
     }
 
-    private void OpenDialog()
+    private void AddClient()
     {
 
         var options = new MudBlazor.DialogOptions
             {
                 MaxWidth = MaxWidth.ExtraLarge
             };
-        DialogService.Show<AddClient>("Add Clients", options);
+        DialogService.Show<AddClient>("Add client", options);
     }
     private void OpenEditDialog(Guid invoiceId)
     {
         // Pass the client ID to the EditClient page
         NavigationManager.NavigateTo($"/edit-client/{invoiceId}");
+    }
+    
+    private void OpenDetailDialog(Guid invoiceId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/detail-client/{invoiceId}");
     }
 }

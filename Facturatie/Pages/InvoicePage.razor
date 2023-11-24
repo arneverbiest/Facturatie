@@ -15,7 +15,7 @@
 
 <h3>Invoices</h3>
 
-<MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+<MudButton OnClick="addInvoice" Variant="Variant.Filled" Color="Color.Primary">
     Add Invoice
 </MudButton>
 <hr />
@@ -48,8 +48,9 @@
         <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
         <MudTd DataLabel="Client name">@context.Client.ClientName</MudTd>
         <MudTd DataLabel="Actions">
-            <MudButton OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
-                Edit invoice
+            <MudFab OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudButton OnClick="@(() => OpenDetailDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
+                detail invoice
             </MudButton>
             <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
@@ -128,15 +129,32 @@
         _table.NavigateTo(i - 1);
     }
 
-    private void OpenDialog()
+    private void addInvoice()
     {
-        DialogService.Show<AddInvoice>("Invoices");
+        NavigationManager.NavigateTo("/add-invoice");
     }
 
     private void OpenEditDialog(Guid invoiceId)
     {
         // Pass the client ID to the EditClient page
         NavigationManager.NavigateTo($"/edit-invoice/{invoiceId}");
+    }
+
+
+    private void OpenDetailDialog(Guid invoiceId)
+    {
+        // Pass the client ID to the EditClient page
+        NavigationManager.NavigateTo($"/detail-invoice/{invoiceId}");
+    }
+
+    private void OpenDialog()
+    {
+
+        var options = new MudBlazor.DialogOptions
+            {
+                MaxWidth = MaxWidth.ExtraLarge
+            };
+        DialogService.Show<AddClient>("Add Clients", options);
     }
 
 }

@@ -1,8 +1,9 @@
-﻿using Facturatie.Shared;
+﻿using Facturatie.Interfaces;
+using Facturatie.Shared;
 
 namespace Facturatie.Services
 {
-    public class ProductService : ServiceBase<Product>
+    public class ProductService : ServiceBase<Product> , IProductService
     {
         public ProductService(ApplicationDbContext context) : base(context)
         {
