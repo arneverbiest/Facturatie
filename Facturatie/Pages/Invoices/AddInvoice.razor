@@ -45,7 +45,18 @@
                 <MudItem xs="12" sm="4" md="6">
                     <MudDatePicker @bind-Value="invoice.StartDate" Mask="@(new DateMask("dd/MM/yyyy"))" @bind-Date="endDate" Placeholder="Select Date" DateFormat="dd/MM/yyyy" Editable="true" Label="Start date" Variant="Variant.Text" Margin="Margin.Normal"></MudDatePicker>
                 </MudItem>
-               
+               <br/>
+
+
+                <MudItem xs="12" sm="4" md="6">
+                    <MudSelect T="Guid" Label="Select Product" @bind-Value="product.ProductId">
+                        <MudSelectItem T="Guid" Value="@product.ProductId">Products</MudSelectItem>
+                        @foreach (var product in products)
+                        {
+                            <MudSelectItem T="Guid" Value="@product.ProductId">@product.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
 
 
             </MudGrid>
