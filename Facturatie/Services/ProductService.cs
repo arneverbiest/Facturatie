@@ -10,10 +10,10 @@ namespace Facturatie.Services
         }
 
 
-        public List<Product> GetProductsByInvoiceId(Guid invoiceId)
+        public List<Product> GetProductsByClientId(Guid clientId)
         {
             // Assuming your Product entity has an InvoiceId property
-            return Entities.Where(p => p.InvoiceID == invoiceId).ToList();
+            return Entities.Where(p => p.ClientId == clientId).ToList();
         }
     }
 }

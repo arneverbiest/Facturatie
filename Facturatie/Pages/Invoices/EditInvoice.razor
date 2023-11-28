@@ -28,6 +28,7 @@
             <MudDatePicker @bind-Value="@invoice.StartDate" DateFormat="yyyy-MM-dd" Label="Name of the startdate of the onvoice"> </MudDatePicker>
             <MudDatePicker @bind-Value="@invoice.EndDate" DateFormat="yyyy-MM-dd" Label="Name of the enddate of the invoice"> </MudDatePicker>
             <br />
+
             <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="Update">Update invoice</MudButton>
         </EditForm>
     </MudCardContent>
@@ -41,7 +42,7 @@
     [Parameter] public string invoiceId { get; set; }
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-
+    private MudTable<Product> _table;
     private Guid parsedInvoicetId;
     private Invoice invoice = new Invoice();
     private Client client = new Client();
@@ -93,5 +94,8 @@
         NavigationManager.NavigateTo($"/Invoices");
     }
 
-
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
 }

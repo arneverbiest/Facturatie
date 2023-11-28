@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
-        public Invoice? Invoice { get; set; }
-        public Guid InvoiceID { get; set; }
+        public Guid ClientId { get; set; }
+        public Client? Client { get; set; }
     }
 }

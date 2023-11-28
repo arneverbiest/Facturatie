@@ -28,6 +28,7 @@
         <MudTh>price without VAT</MudTh>
         <MudTh>Price with VAT</MudTh>
         <MudTh>Client Name</MudTh>
+        <MudTh>Paid</MudTh>
     </HeaderContent>
 
     <RowTemplate>
@@ -39,11 +40,15 @@
         <MudTd DataLabel="Price without VAT">@context.PriceWithoutVAT</MudTd>
         <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
         <MudTd DataLabel="Client Name">@context.Client.ClientName</MudTd>
-        <MudTd DataLabel="Actions">
-        </MudTd>
+
+        <MudSwitch Checked="@invoice.Paid"
+                   OnCheckedChanged="@((bool isChecked) => TogglePaid(invoice, isChecked))"
+                   ThumbIcon="@(invoice.Paid==true ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                   ThumbIconColor="@(invoice.Paid ==true ? Color.Success : Color.Error)" />
     </RowTemplate>
     <PagerContent>
         <MudPagination ShowFirstButton="true" ShowLastButton="true" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+
     </PagerContent>
 </MudTable>
 
@@ -78,6 +83,12 @@
         return invoices;
     }
 
+
+    private void TogglePaid(Invoice clickedInvoice, bool isChecked)
+    {
+        clickedInvoice.Paid = isChecked;
+        snackBar.Add($"Invoice {clickedInvoice.InvoiceNumber} is {(isChecked ? "paid" : "not paid")}.", Severity.Success);
+    }
 
     private void PageChanged(int i)
     {

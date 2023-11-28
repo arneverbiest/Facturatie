@@ -6,6 +6,7 @@ namespace Facturatie.Services
     {
         public ClientService(ApplicationDbContext context) : base(context)
         {
+
         }
     }
 }

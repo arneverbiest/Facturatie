@@ -1,4 +1,5 @@
 ﻿@page "/Invoices"
+@using Facturatie.Pages.Products;
 @using Facturatie.Shared
 @using System
 @using System.Linq
@@ -33,7 +34,6 @@
         <MudTh>invoice number</MudTh>
         <MudTh>start date</MudTh>
         <MudTh>end date</MudTh>
-        <MudTh>price without VAT</MudTh>
         <MudTh>Price with VAT</MudTh>
         <MudTh>Client name</MudTh>
     </HeaderContent>
@@ -44,15 +44,11 @@
         <MudTd DataLabel="Invoice Number">@context.InvoiceNumber</MudTd>
         <MudTd DataLabel="Start Date">@context.StartDate.ToShortDateString()</MudTd>
         <MudTd DataLabel="End Date">@context.EndDate.ToShortDateString()</MudTd>
-        <MudTd DataLabel="Price without VAT">@context.PriceWithoutVAT</MudTd>
         <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
         <MudTd DataLabel="Client name">@context.Client.ClientName</MudTd>
         <MudTd DataLabel="Actions">
             <MudFab OnClick="@(() => OpenEditDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
-            <MudButton OnClick="@(() => OpenDetailDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
-                detail invoice
-            </MudButton>
-            <MudFab @onclick="@(()=>Update(context))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab OnClick="@(() => OpenDetailDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary" Icon="@Icons.Material.Filled.Description" Size="Size.Small" IconSize="Size.Small" />
             <MudFab @onclick="@(()=>Delete(context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
         </MudTd>
     </RowTemplate>
@@ -154,7 +150,7 @@
             {
                 MaxWidth = MaxWidth.ExtraLarge
             };
-        DialogService.Show<AddClient>("Add Clients", options);
+        DialogService.Show<AddProduct>("Add products", options);
     }
 
 }

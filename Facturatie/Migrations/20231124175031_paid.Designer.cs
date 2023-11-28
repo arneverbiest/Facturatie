@@ -4,6 +4,7 @@ using Facturatie;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Facturatie.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231124175031_paid")]
+    partial class paid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,12 +119,12 @@ namespace Facturatie.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InvoiceID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -132,7 +135,7 @@ namespace Facturatie.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("InvoiceID");
 
                     b.ToTable("Product");
                 });
@@ -150,20 +153,23 @@ namespace Facturatie.Migrations
 
             modelBuilder.Entity("Facturatie.Shared.Product", b =>
                 {
-                    b.HasOne("Facturatie.Shared.Client", "Client")
-                        .WithMany("Products")
-                        .HasForeignKey("ClientId")
+                    b.HasOne("Facturatie.Shared.Invoice", "Invoice")
+                        .WithMany("Product")
+                        .HasForeignKey("InvoiceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("Facturatie.Shared.Client", b =>
                 {
                     b.Navigation("Invoices");
+                });
 
-                    b.Navigation("Products");
+            modelBuilder.Entity("Facturatie.Shared.Invoice", b =>
+                {
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }
