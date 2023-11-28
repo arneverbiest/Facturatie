@@ -52,23 +52,6 @@
         </EditForm>
 
         <br />
-        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="AddProduct">Add Product</MudButton>
-        <MudText Typo="Typo.h6">Products in this invoice</MudText>
-        <MudTable Items="@products" TItem="Product">
-            <HeaderContent>
-                <MudTh>Product Name</MudTh>
-                <MudTh>Description</MudTh>
-                <MudTh>Price</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="product Name">@context.Name</MudTd>
-                <MudTd DataLabel="Description">@context.Description</MudTd>
-                <MudTd DataLabel="Price">@context.Price</MudTd>
-            </RowTemplate>
-        </MudTable>
-
-        <br />
-
         <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Add">Add Invoice</MudButton>
     </MudCardContent>
 </MudCard>
@@ -94,6 +77,7 @@
         clients = clientService.GetAll();
         invoices = invoiceService.GetAll();
         products = productService.GetAll();
+        
     }
 
     private List<Invoice> GetAll()
