@@ -13,32 +13,25 @@
 
 
 
-<MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Invoice, bool>(Search)" @bind-employee="invoice">
+<MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" @bind-employee="invoice">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Invoices</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search for Employees..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Id</MudTh>
-        <MudTh>Name</MudTh>
         <MudTh>invoice number</MudTh>
         <MudTh>start date</MudTh>
         <MudTh>end date</MudTh>
-        <MudTh>price without VAT</MudTh>
-        <MudTh>Price with VAT</MudTh>
         <MudTh>Client Name</MudTh>
         <MudTh>Paid</MudTh>
     </HeaderContent>
 
     <RowTemplate>
         <MudTd DataLabel="Id">@context.InvoiceId</MudTd>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Invoice Number">@context.InvoiceNumber</MudTd>
         <MudTd DataLabel="Start Date">@context.StartDate.ToShortDateString()</MudTd>
         <MudTd DataLabel="End Date">@context.EndDate.ToShortDateString()</MudTd>
-        <MudTd DataLabel="Price without VAT">@context.PriceWithoutVAT</MudTd>
-        <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
         <MudTd DataLabel="Client Name">@context.Client.ClientName</MudTd>
 
         <MudSwitch Checked="@invoice.Paid"
@@ -67,15 +60,7 @@
         clients = clientService.GetAll();
     }
 
-    private bool Search(Invoice invoice)
-    {
-        if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (invoice.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-        return false;
-    }
+   
 
     private List<Invoice> GetAll()
     {

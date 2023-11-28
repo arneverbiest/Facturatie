@@ -21,12 +21,9 @@
 {
     <MudContainer>
         <MudPaper Elevation="3" Padding="16px">
-            <MudTextField ReadOnly="true" Label="Name" Value="@(invoice.Name)" />
             <MudTextField ReadOnly="true" Label="Invoice number" Value="@(invoice.InvoiceNumber)" />
             <MudTextField ReadOnly="true" Label="Start date" Value="@(invoice.StartDate.ToShortDateString())" />
             <MudTextField ReadOnly="true" Label="End date" Value="@(invoice.EndDate.ToShortDateString())" />
-            <MudTextField ReadOnly="true" Label="No VAT" Value="@(invoice.PriceWithoutVAT)" />
-            <MudTextField ReadOnly="true" Label="VAT" Value="@(invoice.PriceWithVAT)" />
             <MudTextField ReadOnly="true" Label="Client name" Value="@(invoice.Client.ClientName)" />
 
             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="Close">close</MudButton>
