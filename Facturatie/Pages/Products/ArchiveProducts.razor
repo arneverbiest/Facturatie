@@ -1,0 +1,93 @@
+﻿@page "/archive"
+
+@inject NavigationManager NavigationManager
+@inject MudBlazor.ISnackbar snackBar
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+
+
+<h3>ArchiveProducts</h3>
+
+@if (invoice.Paid == false)
+{
+    <MudTable RowsPerPage="5" @ref="@_table" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Style="color: black" Elevation="25" Items="GetAll()" Filter="new Func<Invoice, bool>(Search)" @bind-employee="invoice">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Invoices</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search for Employees..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>invoice number</MudTh>
+            <MudTh>start date</MudTh>
+            <MudTh>end date</MudTh>
+            <MudTh>price without VAT</MudTh>
+            <MudTh>Price with VAT</MudTh>
+            <MudTh>Client name</MudTh>
+            <MudTh>paid</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.InvoiceId</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Invoice Number">@context.InvoiceNumber</MudTd>
+            <MudTd DataLabel="Start Date">@context.StartDate.ToShortDateString()</MudTd>
+            <MudTd DataLabel="End Date">@context.EndDate.ToShortDateString()</MudTd>
+            <MudTd DataLabel="Price without VAT">@context.PriceWithoutVAT</MudTd>
+            <MudTd DataLabel="Price with VAT">@context.PriceWithVAT</MudTd>
+            <MudTd DataLabel="Client name">@context.Client.ClientName</MudTd>
+            <MudTd DataLabel="Paid">@context.Paid</MudTd>
+            <MudTd DataLabel="Actions">
+                <MudButton OnClick="@(() => OpenDetailDialog(context.InvoiceId))" Variant="Variant.Filled" Color="Color.Primary">
+                    detail invoice
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudPagination ShowFirstButton="true" ShowLastButton="true" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+        </PagerContent>
+    </MudTable>
+
+}
+
+@code {
+    private string searchString = "";
+    private MudTable<Invoice> _table;
+    private Invoice invoice = new Invoice();
+    private Client client = new Client();
+    private List<Invoice> invoices = new List<Invoice>();
+    private List<Client> clients = new List<Client>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        invoices = invoiceService.GetAll();
+        clients = clientService.GetAll();
+    }
+
+    private bool Search(Invoice invoice)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (invoice.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private List<Invoice> GetAll()
+    {
+        invoices = invoiceService.GetAll();
+        return invoices;
+    }
+
+    private void OpenDetailDialog(Guid invoiceId)
+    {
+        NavigationManager.NavigateTo($"/detail-invoice/{invoiceId}");
+    }
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+}

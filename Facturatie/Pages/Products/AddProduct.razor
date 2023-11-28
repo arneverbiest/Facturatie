@@ -25,11 +25,15 @@
             <MudCardContent>
                 <EditForm OnValidSubmit="AddProducts" OnInvalidSubmit='()=>snackBar.Add("Product added",Severity.Warning)' Model="@product">
                     <MudItem xs="12" sm="4" md="6">
-                        <MudSelect T="Guid" Label="Select invoice" @bind-Value="product.InvoiceID">
-                            <MudSelectItem T="Guid" Value="@invoice.InvoiceId">invoices</MudSelectItem>
-                            @foreach (var invoice in invoices)
+                        @* <MudSelect T="Guid" Label="Select invoice" @bind-Value="invoice.InvoiceId"> *@
+                            <MudSelect T="Guid" Label="Select invoice" @bind-Value="product.ClientId">
+                            @* <MudSelectItem T="Guid" Value="@invoice.InvoiceId">invoices</MudSelectItem> *@
+                            <MudSelectItem T="Guid" Value="@client.ClientId">clients</MudSelectItem>
+
+                            @foreach (var client in clients)
                             {
-                                <MudSelectItem T="Guid" Value="@invoice.InvoiceId">@client.ClientName</MudSelectItem>
+                                @* <MudSelectItem T="Guid" Value="@invoice.InvoiceId">@invoice.Name</MudSelectItem> *@
+                                <MudSelectItem T="Guid" Value="@client.ClientId">@client.ClientName</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>
@@ -38,12 +42,11 @@
                     <MudNumericField @bind-Value="@product.Price" Label="Price of product"> </MudNumericField>
                 </EditForm>
                 <br />
-                <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="AddProducts">Add Product</MudButton>
             </MudCardContent>
         </MudCard>
         <br />
         <MudText Typo="Typo.h6">Products in this invoice</MudText>
-        
+
 
 
 
@@ -118,15 +121,15 @@
     private void AddProducts()
     {
         // Associate the product with the current invoice
-        product.InvoiceID = invoice.InvoiceId;
+        product.ClientId = client.ClientId;
 
         // Add the product to the database using ProductService
         productService.Add(product);
 
         // Update the list of products
-        products = productService.GetProductsByInvoiceId(invoice.InvoiceId);
+        products = productService.GetProductsByClientId(invoice.InvoiceId);
 
         snackBar.Add("Product Added.", Severity.Success);
-        
+
     }
 }

@@ -4,6 +4,6 @@ namespace Facturatie.Interfaces
 {
     public interface IProductService : ICrud<Product>
     {
-        List<Product> GetProductsByInvoiceId(Guid invoiceId);
+        List<Product> GetProductsByClientId(Guid clientId);
     }
 }

@@ -17,13 +17,15 @@
 <MudCard Elevation="25">
     <MudCardContent>
         <EditForm OnValidSubmit="Add" OnInvalidSubmit='()=>snackBar.Add("Product added",Severity.Warning)' Model="@product">
-            <MudSelect T="Guid" Label="Select invoice" @bind-Value="product.InvoiceID">
-                <MudSelectItem T="Guid" Value="@invoice.InvoiceId">invoices</MudSelectItem>
-                @foreach (var invoice in invoices)
+            <MudSelect T="Guid" Label="Select client" @bind-Value="client.ClientId">
+                @* <MudSelectItem T="Guid" Value="@invoice.InvoiceId">invoices</MudSelectItem> *@
+                <MudSelectItem T="Guid" Value="@client.ClientId">clients</MudSelectItem>
+                @foreach (var client in clients)
                 {
-                    <MudSelectItem T="Guid" Value="@invoice.InvoiceId">@client.ClientName</MudSelectItem>
+                    <MudSelectItem T="Guid" Value="@client.ClientId">@client.ClientName</MudSelectItem>
                 }
-            </MudSelect>            <MudTextField @bind-Value="@product.Name" Label="Name of the product"> </MudTextField>
+            </MudSelect>
+            <MudTextField @bind-Value="@product.Name" Label="Name of the product"> </MudTextField>
             <MudTextField @bind-Value="@product.Description" Label="Description of the product"> </MudTextField>
             <MudNumericField @bind-Value="@product.Price" Label="Price of product"> </MudNumericField>
         </EditForm>
@@ -54,28 +56,28 @@
         clients = clientService.GetAll();
         invoices = invoiceService.GetAll();
         products = productService.GetAll();
-        product.InvoiceID = invoice.InvoiceId;
+        product.ClientId = client.ClientId;
     }
 
-    private List<Invoice> GetAll()
+    private List<Client> GetAll()
     {
-        invoices = invoiceService.GetAll();
-        return invoices;
+        clients = clientService.GetAll();
+        return clients;
     }
 
 
     private void Add()
     {
-        if (invoice.InvoiceId == Guid.Empty)
+        if (client.ClientId == Guid.Empty)
         {
-            invoiceService.Add(invoice);
+            clientService.Add(client);
         }
         else
         {
-            invoiceService.Update(invoice);
+            clientService.Update(client);
         }
         invoice = new Invoice();
-        snackBar.Add("invoice Added.", Severity.Success);
+        snackBar.Add("product Added.", Severity.Success);
         GetAll();
         Close();
     }
@@ -84,13 +86,13 @@
     private void AddProduct()
     {
         // Associate the product with the current invoice
-        product.InvoiceID = invoice.InvoiceId;
+        product.ClientId = client.ClientId;
 
         // Add the product to the database using ProductService
         productService.Add(product);
 
         // Update the list of products
-        products = productService.GetProductsByInvoiceId(invoice.InvoiceId);
+        products = productService.GetProductsByClientId(client.ClientId);
 
         snackBar.Add("Product Added.", Severity.Success);
 
